@@ -3,17 +3,26 @@
 var Message = require('./message.model');
 var moment = require('moment');
 var mongoose = require('mongoose');
-var _ = require('lodash');
+
+var ALL_ROOMS = 'All Rooms';
 
 // Creates a new message in the DB.
 exports.search = function(req, res) {
-  Message.search({
+  if (req.body.room === ALL_ROOMS) {
+    req.body.room = '*';
+  }
+  var query = {
     query: {
       bool: {
         must: [{
           query_string: {
             default_field: 'text',
             query: req.body.text
+          }
+        }, {
+          query_string: {
+            default_field: 'to',
+            query: req.body.room
           }
         }]
       }
@@ -25,7 +34,8 @@ exports.search = function(req, res) {
         text: {}
       }
     }
-  }, function(err, results) {
+  };
+  Message.search(query, function(err, results) {
     if (err) {
       return res.status(500).json(err);
     }
@@ -93,4 +103,15 @@ exports.search = function(req, res) {
         });
       });
   });
+};
+
+
+exports.rooms = function(req, res) {
+  Message.distinct('to', function(err, rooms) {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    rooms.unshift(ALL_ROOMS);
+    res.json(rooms);
+  })
 };

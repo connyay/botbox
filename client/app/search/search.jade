@@ -2,13 +2,17 @@ div(ng-include='"components/navbar/navbar.html"')
 
 .container
   .row
-
-  form.search-form(ng-submit='doSearch()')
-    label Search
-    p.input-group
-      input.form-control(type='text', placeholder='Search', ng-model='searchText')
-      span.input-group-btn
-        button.btn.btn-primary(type='submit') Search
+    form.form-horizontal
+      fieldset
+        .form-group
+          label.col-md-4.control-label(for='text') Text
+          .col-md-5
+            input#text.form-control.input-md(name='text', type='text', placeholder='text', required='', ng-model='search.text', ng-change="doSearch()", ng-model-options="{ debounce: 500 }")
+        .form-group
+          label.col-md-4.control-label(for='room') Room
+          .col-md-5
+            select#room.form-control(name='room', ng-model='search.room', ng-change="doSearch()")
+              option(ng-repeat="room in rooms" value='{{room}}') {{::room}}
 
 
   div(ng-repeat="room in results.rooms")

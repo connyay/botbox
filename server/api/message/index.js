@@ -6,5 +6,6 @@ var controller = require('./message.controller');
 var router = express.Router();
 
 router.post('/search', controller.search);
+router.get('/rooms', controller.rooms);
 
 module.exports = router;

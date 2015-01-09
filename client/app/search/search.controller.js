@@ -1,14 +1,24 @@
 'use strict';
 
 angular.module('botboxApp')
-  .controller('SearchCtrl', function($scope, $http) {
-    $scope.searchText = '';
+  .controller('SearchCtrl', function($scope, api) {
+    $scope.search = {
+      room: 'All Rooms'
+    };
+
+    $scope.rooms = [{
+      name: 'Loading...',
+      value: 'All Rooms'
+    }];
+    api.getRooms().success(function(rooms) {
+      $scope.rooms = rooms;
+    });
     $scope.notFound = false;
     $scope.doSearch = function() {
-      console.log('Search ', $scope.searchText);
-      $http.post('/api/messages/search', {
-        text: $scope.searchText
-      }).success(function(results) {
+      if ($scope.search.text === '') {
+        return;
+      }
+      api.search($scope.search).success(function(results) {
         $scope.results = results;
         $scope.notFound = false;
       }).error(function() {

@@ -7,6 +7,9 @@ var client = new irc.Client('irc.devel.redhat.com', 'botbox', {
 });
 client.connect(5, function(input) {
   console.log('Connected!');
+  client.join('#LaCroix', function(input) {
+    console.log('Joined #LaCroix');
+  });
   client.join('#botboxTest', function(input) {
     console.log('Joined #botboxTest');
   });
