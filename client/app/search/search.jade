@@ -1,0 +1,26 @@
+div(ng-include='"components/navbar/navbar.html"')
+
+.container
+  .row
+
+  form.search-form(ng-submit='doSearch()')
+    label Search
+    p.input-group
+      input.form-control(type='text', placeholder='Search', ng-model='searchText')
+      span.input-group-btn
+        button.btn.btn-primary(type='submit') Search
+
+
+  div(ng-repeat="room in results.rooms")
+    h3 {{room}}
+    table.table.table-hover.table-bordered.table-condensed
+      tr(ng-repeat='message in results.messages | filter:{to: room}', ng-class="{success: message.highlight}")
+        td.col-md-1
+          span {{message.from}}
+        td.col-md-9
+          span(ng-bind-html="message.text | trust_html")
+        td.col-md-2
+          span {{message.date | date:'short'}}
+
+  div(ng-show="notFound")
+    h3 Not found, yo.
