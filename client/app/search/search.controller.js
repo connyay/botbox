@@ -3,7 +3,8 @@
 angular.module('botboxApp')
   .controller('SearchCtrl', function($scope, api) {
     $scope.search = {
-      room: 'All Rooms'
+      room: 'All Rooms',
+      text: ''
     };
 
     $scope.rooms = [{
@@ -15,7 +16,7 @@ angular.module('botboxApp')
     });
     $scope.notFound = false;
     $scope.doSearch = function() {
-      if ($scope.search.text === '') {
+      if (!$scope.search.text) {
         return;
       }
       api.search($scope.search).success(function(results) {
