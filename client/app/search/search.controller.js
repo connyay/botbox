@@ -6,6 +6,15 @@ angular.module('botboxApp')
       room: 'All Rooms',
       text: ''
     };
+    $scope.display = function(event, message_id) {
+      api.display(message_id).success(function(results) {
+        $scope.results = results;
+        $scope.notFound = false;
+      }).error(function() {
+        $scope.notFound = true;
+        delete $scope.results;
+      });
+    };
 
     $scope.rooms = [{
       name: 'Loading...',

@@ -18,7 +18,7 @@ div(ng-include='"components/navbar/navbar.html"')
   div(ng-repeat="room in results.rooms")
     h3 {{room}}
     table.table.table-hover.table-bordered.table-condensed
-      tr(ng-repeat='message in results.messages | filter:{to: room}', ng-class="{success: message.highlight}")
+      tr(ng-repeat='message in results.messages | filter:{to: room}', ng-click="display($event, message)", ng-class="{success: message.highlight}")
         td.col-md-1
           span {{message.from}}
         td.col-md-9

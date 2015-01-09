@@ -55,19 +55,29 @@ exports.search = function(req, res) {
         }
       });
     }
-    var firstHit = hits[0];
-    if (!firstHit) {
-      return res.status(404).send();
-    }
+        res.json({
+          rooms: rooms,
+          messages: hits
+        });
+      });
+};
+
+exports.display = function(req, res) {
+    console.log(req.body._id);
+    console.log(mongoose.Types.ObjectId(req.body._id));
+    var objId = mongoose.Types.ObjectId(req.body._id);
+    console.dir(objId);
+    Message.findById(objId, function (err, message) {
+	console.log(arguments);
+        
+
     // Hacky and not right
-    var dateRangeStart = moment(firstHit.date).startOf('day'),
+    var dateRangeStart = moment(message.date).startOf('day'),
       dateRangeEnd = moment(dateRangeStart).add(1, 'days');
 
     Message
       .find({
-        to: {
-          $in: rooms
-        },
+        to: message.to,
         date: {
           $gte: dateRangeStart.toDate(),
           $lt: dateRangeEnd.toDate()
@@ -81,24 +91,7 @@ exports.search = function(req, res) {
         if (err) {
           return res.status(500).json(err);
         }
-        hits.forEach(function(hit) {
-
-          var msg = null,
-            i;
-          for (i = 0; i < messages.length; i++) {
-            if (messages[i]._id.equals(hit._id)) {
-              msg = messages[i];
-              break;
-            }
-          }
-          if (msg) {
-            msg.highlight = true;
-            msg.text = hit.text;
-          }
-
-        });
         res.json({
-          rooms: rooms,
           messages: messages
         });
       });
