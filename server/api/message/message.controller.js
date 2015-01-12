@@ -63,15 +63,9 @@ exports.search = function(req, res) {
 };
 
 exports.display = function(req, res) {
-    console.log(req.body._id);
-    console.log(mongoose.Types.ObjectId(req.body._id));
     var objId = mongoose.Types.ObjectId(req.body._id);
-    console.dir(objId);
     Message.findById(objId, function (err, message) {
-	console.log(arguments);
-        
 
-    // Hacky and not right
     var dateRangeStart = moment(message.date).startOf('day'),
       dateRangeEnd = moment(dateRangeStart).add(1, 'days');
 
@@ -91,7 +85,14 @@ exports.display = function(req, res) {
         if (err) {
           return res.status(500).json(err);
         }
+	messages.forEach(function(msg) {
+	  if (msg._id == req.body._id) {
+	    msg.text = "<mark>" + msg.text + "</mark>";
+          }
+        });
+
         res.json({
+	  rooms: message.to,
           messages: messages
         });
       });
